@@ -17,6 +17,7 @@
 #pragma once
 
 #include <cstdlib>
+#include <utility>
 
 namespace cpplec {
 
@@ -31,6 +32,46 @@ private:
 
 public:
   compact_vector() = default;
+
+  compact_vector(size_type size) : data_{new value_type[size]{}}, size_{size} {}
+
+  compact_vector(size_type size, const value_type &val) {
+    compact_vector tmp{size};
+    for (size_type i = 0; i != size; ++i)
+      tmp[i] = val;
+    *this = std::move(tmp);
+  }
+
+  compact_vector(const compact_vector &rhs) {
+    compact_vector tmp{rhs.size()};
+    for (size_type i = 0; i != rhs.size(); ++i)
+      tmp[i] = rhs[i];
+    *this = std::move(tmp);
+  }
+
+  compact_vector(compact_vector &&rhs) noexcept { *this = std::move(rhs); }
+
+  compact_vector &operator=(const compact_vector &rhs) {
+    if (this == std::addressof(rhs))
+      return *this;
+    auto tmp{rhs};
+    *this = std::move(tmp);
+    return *this;
+  }
+
+  compact_vector &operator=(compact_vector &&rhs) noexcept {
+    std::swap(data_, rhs.data_);
+    std::swap(size_, rhs.size_);
+    return *this;
+  }
+
+  value_type &operator[](size_type idx) { return data_[idx]; }
+
+  const value_type &operator[](size_type idx) const {
+    return const_cast<compact_vector *>(this)->operator[](idx);
+  }
+
+  ~compact_vector() { delete[] data_; }
 
   size_type size() const { return size_; }
 };
