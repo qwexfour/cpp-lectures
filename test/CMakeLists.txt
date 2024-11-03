@@ -18,6 +18,7 @@ add_executable(
   cpplec-gtest
 
   compact_vector.cpp
+  meta.cpp
 )
 
 target_link_libraries(
