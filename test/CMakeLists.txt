@@ -19,6 +19,7 @@ add_executable(
 
   compact_vector.cpp
   meta.cpp
+  iterator.cpp
 )
 
 target_link_libraries(
