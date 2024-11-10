@@ -14,31 +14,30 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "int_wrapper.hpp"
+#pragma once
 
-#include "cpplec/iterator.hpp"
+template <typename T> struct int_wrapper final {
+  T value = 0;
 
-#include <gtest/gtest.h>
+  int_wrapper() = default;
+  int_wrapper(T val) : value{val} {}
 
-using namespace cpplec;
+  int_wrapper &operator++() {
+    ++value;
+    return *this;
+  }
 
-TEST(integral_iterator, basic) {
-  integral_iterator it{5};
-  ASSERT_EQ(*it, 5);
-  ASSERT_EQ(*it++, 5);
-  ASSERT_EQ(*it, 6);
-  ASSERT_EQ(*++it, 7);
-  ASSERT_TRUE(it == integral_iterator{7});
-  ASSERT_TRUE(it != integral_iterator{0});
-}
+  int_wrapper operator++(int) {
+    auto tmp = *this;
+    operator++();
+    return tmp;
+  }
 
-TEST(integral_iterator, int_wrapper) {
-  integral_iterator<int_wrapper<int>> it{5};
-  ASSERT_EQ(*it, 5);
-  ASSERT_EQ(it->value, 5);
-  ASSERT_EQ(*it++, 5);
-  ASSERT_EQ(*it, 6);
-  ASSERT_EQ(*++it, 7);
-  ASSERT_TRUE(it == integral_iterator<int_wrapper<int>>{7});
-  ASSERT_TRUE(it != integral_iterator<int_wrapper<int>>{0});
-}
+  friend bool operator==(int_wrapper lhs, int_wrapper rhs) {
+    return lhs.value == rhs.value;
+  }
+
+  friend bool operator!=(int_wrapper lhs, int_wrapper rhs) {
+    return !(lhs == rhs);
+  }
+};
