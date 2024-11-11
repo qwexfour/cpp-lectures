@@ -42,3 +42,34 @@ TEST(integral_iterator, int_wrapper) {
   ASSERT_TRUE(it == integral_iterator<int_wrapper<int>>{7});
   ASSERT_TRUE(it != integral_iterator<int_wrapper<int>>{0});
 }
+
+TEST(integral_iterator, random_access) {
+  integral_iterator it{0};
+  ASSERT_EQ(*--it, -1);
+  auto copy = it;
+  ASSERT_EQ(++--it, copy);
+  ASSERT_EQ(*it--, -1);
+  ASSERT_EQ((it - 3) - copy, -4);
+  ASSERT_EQ(copy - (it -= 3), 4);
+  ASSERT_EQ(copy, it += 4);
+  ASSERT_EQ((it + 7) - (copy - 2), 9);
+  ASSERT_EQ((it + 7) - (3 + copy), 4);
+
+  it = integral_iterator{13};
+  ASSERT_EQ(it[15], 28);
+
+  integral_iterator bigger{25};
+  integral_iterator smaller{-25};
+  ASSERT_TRUE(bigger > smaller);
+  ASSERT_TRUE(bigger >= smaller);
+  ASSERT_FALSE(bigger < smaller);
+  ASSERT_FALSE(bigger <= smaller);
+  ASSERT_FALSE(smaller > bigger);
+  ASSERT_FALSE(smaller >= bigger);
+  ASSERT_TRUE(smaller < bigger);
+  ASSERT_TRUE(smaller <= bigger);
+  ASSERT_FALSE(it > it);
+  ASSERT_TRUE(it >= it);
+  ASSERT_FALSE(it < it);
+  ASSERT_TRUE(it <= it);
+}

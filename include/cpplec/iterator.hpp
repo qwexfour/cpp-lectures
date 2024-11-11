@@ -33,7 +33,7 @@ private:
 
 public:
   integral_iterator() = default;
-  integral_iterator(value_type init) : cur_int{init} {}
+  explicit integral_iterator(value_type init) : cur_int{init} {}
 
   value_type operator*() const { return cur_int; }
 
@@ -50,12 +50,71 @@ public:
     return prev_it;
   }
 
+  integral_iterator &operator--() {
+    --cur_int;
+    return *this;
+  }
+
+  integral_iterator operator--(int) {
+    auto prev_it = *this;
+    operator--();
+    return prev_it;
+  }
+
+  integral_iterator &operator+=(difference_type delta) {
+    cur_int += delta;
+    return *this;
+  }
+
+  integral_iterator &operator-=(difference_type delta) {
+    cur_int -= delta;
+    return *this;
+  }
+
+  value_type operator[](difference_type delta) { return *(*this + delta); }
+
   friend bool operator==(integral_iterator lhs, integral_iterator rhs) {
     return lhs.cur_int == rhs.cur_int;
   }
 
   friend bool operator!=(integral_iterator lhs, integral_iterator rhs) {
     return !(lhs == rhs);
+  }
+
+  friend bool operator<(integral_iterator lhs, integral_iterator rhs) {
+    return lhs.cur_int < rhs.cur_int;
+  }
+
+  friend bool operator>(integral_iterator lhs, integral_iterator rhs) {
+    return rhs < lhs;
+  }
+
+  friend bool operator<=(integral_iterator lhs, integral_iterator rhs) {
+    return !(lhs > rhs);
+  }
+
+  friend bool operator>=(integral_iterator lhs, integral_iterator rhs) {
+    return !(lhs < rhs);
+  }
+
+  friend integral_iterator operator+(integral_iterator lhs,
+                                     difference_type rhs) {
+    return lhs += rhs;
+  }
+
+  friend integral_iterator operator+(difference_type lhs,
+                                     integral_iterator rhs) {
+    return rhs += lhs;
+  }
+
+  friend integral_iterator operator-(integral_iterator lhs,
+                                     difference_type rhs) {
+    return lhs -= rhs;
+  }
+
+  friend difference_type operator-(integral_iterator lhs,
+                                   integral_iterator rhs) {
+    return lhs.cur_int - rhs.cur_int;
   }
 };
 
