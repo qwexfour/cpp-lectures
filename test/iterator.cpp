@@ -19,6 +19,7 @@
 #include "cpplec/iterator.hpp"
 
 #include <gtest/gtest.h>
+#include <vector>
 
 using namespace cpplec;
 
@@ -72,4 +73,12 @@ TEST(integral_iterator, random_access) {
   ASSERT_TRUE(it >= it);
   ASSERT_FALSE(it < it);
   ASSERT_TRUE(it <= it);
+}
+
+TEST(integral_range, basic) {
+  std::vector<int> vec;
+  std::vector<int> ref{3, 4, 5, 6};
+  for (auto elem : make_integral_range(3, 7))
+    vec.push_back(elem);
+  ASSERT_EQ(vec, ref);
 }

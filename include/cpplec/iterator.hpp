@@ -20,6 +20,17 @@
 
 namespace cpplec {
 
+template <typename Iter> class iterator_range final {
+  Iter begin_it;
+  Iter end_it;
+
+public:
+  iterator_range(Iter b, Iter e) : begin_it{b}, end_it{e} {}
+
+  Iter begin() const { return begin_it; }
+  Iter end() const { return end_it; }
+};
+
 template <typename T> class integral_iterator final {
 public:
   using value_type = T;
@@ -117,5 +128,9 @@ public:
     return lhs.cur_int - rhs.cur_int;
   }
 };
+
+template <typename T> auto make_integral_range(T begin, T end) {
+  return iterator_range{integral_iterator<T>{begin}, integral_iterator<T>{end}};
+}
 
 } // namespace cpplec
